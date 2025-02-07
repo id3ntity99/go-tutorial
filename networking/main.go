@@ -13,14 +13,13 @@ func main() {
 	wlog := *log.New(os.Stdout, "[Warning]: ", log.LstdFlags)
 	wd, err := os.Getwd()
 
+	h := htmlfinder.NewHandler(wd)
+
 	if err != nil {
 		wlog.Println("Failed while getting currently working directory")
 	}
 
-	h := htmlfinder.NewHandler(wd)
+	http.HandleFunc("/resources", htmlfinder.Make(h.HandleHTML))
 
-	htmlfinder.Make(h.HandleFetchResource)
-
-	http.HandleFunc("/resources/", htmlfinder.Make(h.HandleFetchResource))
 	http.ListenAndServe(":8080", nil)
 }
